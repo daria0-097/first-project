@@ -1,19 +1,42 @@
-# This is a sample Python script.
+import requests
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from requests.models import Response
 
+from datetime import datetime
+import json
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+from additional_functions import check_correctly_date
 
 
-# Привет!
+# url = f'https://www.cbr-xml-daily.ru/archive/2024/05/15/daily_json.js'
+# response = requests.get(url)
+#
+# # GET
+# # POST
+#
+# print(response.text)
+
+
+# user_date: str = input()
+# object_dt = datetime.strptime(user_date, '%d.%m.%Y')
+# url = f'https://www.cbr-xml-daily.ru/archive/{object_dt.strftime("%Y/%m/%d")}/daily_json.js'
+
+# print(url)
+# r = requests.get(url)
+# print(r.text)
+
+date_from_input = input('Введи дату в формате dd.mm.yyyy: ')
+flag = False
+
+if check_correctly_date(date_from_input):
+    object_dt = datetime.strptime(date_from_input, '%d.%m.%Y')
+
+    url = f'https://www.cbr-xml-daily.ru/archive/{object_dt.strftime("%Y/%m/%d")}/daily_json.js'
+    r = requests.get(url)
+    print(r.text)
+
+else:
+    print('error')
+
+
+
