@@ -24,7 +24,7 @@ def check_correctly_date(user_date: str) -> bool:
 
 
 # вернуться к нормальным названиям функций
-def open_and_read_db(data_key: str):
+def get_final_data(data_key: str, object_dt: datetime) -> dict:
     """Задача функции - отрыть файл с датами, попробовать найти ключ и вернуть True or False
     Возможные варианты развития событий:
     1) Даты (ключа в словаре) нет! -> 1000% должны сделать запрос к API
@@ -32,20 +32,45 @@ def open_and_read_db(data_key: str):
         а) если у ключа значение False -> на этом наш скрипт должен закончить работу
         б) если у ключа значение True -> должны перейти к открытию файл...
     data_key - это строка вида %d_%m_%Y
+    предполагаемое возвращаемое значение будет выглядеть как-то так:
+    {
+        'flag': True | False,
+        'data': данные,
+        'info': ...
+    }
     """
+    final_data = {
+        'flag': None,
+        'data': None,
+        'info': None
+    }
+
     with open('info_about_successful_requests.json', 'r', encoding='utf-8') as file:
         info_about_all_dates: dict = json.load(file)
 
     if data_key not in info_about_all_dates:
-        return False
+        # запрос по дате мы еще не отправляли
+        response = request_to_currency_api(object_dt, data_key)
+        if isinstance(response, bool):
+            final_data['flag'] = response
+            final_data['info'] = 'На указанную дату нет никакой информации. Попробуйте выбрать другую дату'
+        else:
+            final_data['flag'] = True
+            final_data['data'] = response
+            final_data['info'] = 'Запрос был успешно обработан'
 
     else:
         flag = info_about_all_dates[data_key]
         if flag:
             # должны как-то сообщить основному циклу о том, что нужно открыть файл
-            pass
+            final_data['flag'] = True
+            final_data['data'] = open_and_read_data_from_file(data_key)
+            final_data['info'] = 'Запрос был успешно обработан'
         else:
-            return False
+            final_data['flag'] = False
+            final_data['info'] = 'На указанную дату нет никакой информации. Попробуйте выбрать другую дату'
+
+    return final_data
 
 
 # вернуться к нормальным названиям функций
@@ -59,11 +84,9 @@ def open_and_read_data_from_file(data_key: str) -> dict:
     return json_data_from_api['Valute']
 
 
-def request_to_currency_api(object_dt: datetime) -> bool | dict:
+def request_to_currency_api(object_dt: datetime, date_key: str) -> bool | dict:
     with open('info_about_successful_requests.json', 'r', encoding='utf-8') as file:
         info_about_all_dates = json.load(file)
-
-    date_key: str = object_dt.strftime('%d_%m_%Y')
 
     url = f'https://www.cbr-xml-daily.ru/archive/{object_dt.strftime("%Y/%m/%d")}/daily_json.js'
     response = requests.get(url)
