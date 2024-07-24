@@ -50,7 +50,10 @@ def index():
 @app.route('/submit', methods=["POST"])
 def submit():
     data = request.get_json()
-    print(data)
+    data_string = f'{data["day"]}.{data["month"]}.{data["year"]}'
+    print(f'Предполагаемая дата:', data_string)
+    print(check_correctly_date(data_string))
+
     return render_template('index.html')
 
 

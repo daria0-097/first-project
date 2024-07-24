@@ -28,41 +28,69 @@
         </div>
 
         <div class="container text-center" style="padding-top: 50px;">
-            <div class="row">
-                <div class="col"></div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="{{ day }}" aria-label="Username" aria-describedby="basic-addon1">
+            <form id="input-form">
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col">
+                        <input type="text" class="form-control" id="day" placeholder="{{ day }}" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" id="month" placeholder="{{ month }}" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" id="year" placeholder="{{ year }}" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="col"></div>
                 </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="{{ month }}" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                <div class="col">
-                    <input type="text" class="form-control" placeholder="{{ year }}" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                <div class="col"></div>
-            </div>
-            
-            <div class="row">
-                <div class="col"></div>
-                <div class="col">
-                    <p>День</p>
-                </div>
-                <div class="col">
-                    <p>Месяц</p>
-                </div>
-                <div class="col">
-                    <p>Год</p>
-                </div>
-                <div class="col"></div>
-            </div>
 
-            <div class="row">
-                <div class="col">
-                    <button type="submit" class="btn btn-lg btn-primary">Узнать</button>
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col">
+                        <p>День</p>
+                    </div>
+                    <div class="col">
+                        <p>Месяц</p>
+                    </div>
+                    <div class="col">
+                        <p>Год</p>
+                    </div>
+                    <div class="col"></div>
                 </div>
-            </div>
+
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-lg btn-primary">Узнать</button>
+                    </div>
+                </div>
+            </form>
 
         </div>
     </div>
+
+<script>
+    document.getElementById("input-form").addEventListener('submit', function(event) {
+
+        const day = document.getElementById("day").value;
+        const month = document.getElementById("month").value;
+        const year = document.getElementById("year").value;
+        
+        console.log(day, month, year);
+
+        fetch("/submit", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "day": day, "month": month, "year": year })
+        })
+        .then(response => response.text)
+        .then(data => {
+            document.getElementById('response').innerText = data;
+        })
+
+    })
+
+</script>
+
 </body>
 </html>
