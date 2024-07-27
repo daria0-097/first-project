@@ -110,3 +110,4 @@ def request_to_currency_api(object_dt: datetime, date_key: str) -> bool | dict:
     return False
 
 
+
