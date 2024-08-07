@@ -68,30 +68,5 @@
     </div>
 
 
-<script>
-    document.getElementById("input-form").addEventListener('submit', function(event) {
-
-        const day = document.getElementById("day").value;
-        const month = document.getElementById("month").value;
-        const year = document.getElementById("year").value;
-        
-        console.log(day, month, year);
-
-        fetch("/submit", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ "day": day, "month": month, "year": year })
-        })
-        .then(response => response.text)
-        .then(data => {
-            document.getElementById('response').innerText = data;
-        })
-
-    })
-
-</script>
-
 </body>
 </html>
