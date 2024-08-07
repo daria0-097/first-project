@@ -64,7 +64,6 @@ def submit():
 
 
 
-
 @app.route('/test_currency')
 def test_currency():
     data = {
@@ -73,7 +72,7 @@ def test_currency():
     with open('data_base/11_07_2024.json', 'r', encoding='utf-8') as file:
         currency: dict = json.load(file)
 
-    data['currency'] = currency
+    data['currency'] = currency['Valute']
 
     return render_template('test_currency.html', **data)
 
@@ -83,5 +82,8 @@ if __name__ == '__main__':
 
 
 
+dct = {'key1': 'value1', 'key2': 'value2'}
 
+for i in dct.values():
+    print(i)
 
