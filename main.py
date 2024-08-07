@@ -30,7 +30,7 @@ from additional_functions import check_correctly_date, get_final_data
 # Django
 # Flask
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 
 app = Flask(__name__)
@@ -49,8 +49,31 @@ def index():
 
 @app.route('/submit', methods=["POST"])
 def submit():
-    pass
+    day = request.form.get('day')
+    month = request.form.get('month')
+    year = request.form.get('year')
 
+    if not check_correctly_date(f'{day}.{month}.{year}'):
+        return redirect(url_for('error'))
+
+    else:
+        return redirect(url_for('success'))
+
+
+@app.route('/success')
+def success():
+    data = {
+        'title': "Курс валют",
+    }
+    return render_template('success.html')
+
+
+@app.route('/error')
+def error():
+    data = {
+        'title': "Курс валют",
+    }
+    return render_template('error.html')
 
 
 @app.route('/test_currency')
@@ -66,13 +89,12 @@ def test_currency():
     return render_template('test_currency.html', **data)
 
 
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
 
 
-dct = {'key1': 'value1', 'key2': 'value2'}
-
-for i in dct.values():
-    print(i)
 

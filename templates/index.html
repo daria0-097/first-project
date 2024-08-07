@@ -28,17 +28,17 @@
         </div>
 
         <div class="container text-center" style="padding-top: 50px;">
-            <form id="input-form">
+            <form id="input-form" method="post" action="{{ url_for('submit') }}">
                 <div class="row">
                     <div class="col"></div>
                     <div class="col">
-                        <input type="text" class="form-control" id="day" placeholder="{{ day }}" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control" id="day" name="day" placeholder="{{ day }}">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" id="month" placeholder="{{ month }}" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control" id="month" name="month" placeholder="{{ month }}">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" id="year" placeholder="{{ year }}" aria-label="Username" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control" id="year" name="year" placeholder="{{ year }}">
                     </div>
                     <div class="col"></div>
                 </div>
