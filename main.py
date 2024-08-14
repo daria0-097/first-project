@@ -57,7 +57,7 @@ def submit():
         return redirect(url_for('error'))
 
     else:
-        return redirect(url_for('success'))
+        return redirect(url_for('success', current_date=f'{day}.{month}.{year}'))
 
 
 @app.route('/success')
@@ -65,7 +65,22 @@ def success():
     data = {
         'title': "Курс валют",
     }
-    return render_template('success.html')
+    current_date: str = request.args.get('current_date')
+
+    object_dt = datetime.strptime(current_date, '%d.%m.%Y')
+    date_key: str = object_dt.strftime('%d_%m_%Y')
+
+    final_data = get_final_data(date_key, object_dt)
+
+    for key, value in final_data['data'].items():
+        if value['Nominal'] != 1:
+            new_value = value['Value'] / value['Nominal']
+            value['Nominal'] = 1
+            value['Value'] = round(new_value, 4)
+
+    data['currency'] = final_data['data']
+
+    return render_template('success.html', **data)
 
 
 @app.route('/error')

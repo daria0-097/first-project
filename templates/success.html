@@ -20,11 +20,33 @@
                 </div>
             </div>
 
-            <div class="row" style="padding-top: 50px;">
-                <div class="col">
-                    <h4>Дата, которую ты ввёл была корректной!</h4>
-                </div>
-            </div>
+            <div class="container text-center" style="padding-top: 50px;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">NumCode</th>
+                        <th scope="col">CharCode</th>
+                        <th scope="col">Nominal</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for value in currency.values() %}
+                        <tr>
+                            <th scope="row">{{ value["NumCode"] }}</th>
+                            <td>{{ value["CharCode"] }}</td>
+                            <td>{{ value["Nominal"] }}</td>
+                            <td>{{ value["Name"] }}</td>
+                            <td>{{ value["Value"] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
 
         </div>
     </div>
