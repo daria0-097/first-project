@@ -21,32 +21,32 @@
             </div>
 
             <div class="container text-center" style="padding-top: 50px;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">NumCode</th>
-                        <th scope="col">CharCode</th>
-                        <th scope="col">Nominal</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Value</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for value in currency.values() %}
+                <table class="table">
+                    <thead>
                         <tr>
-                            <th scope="row">{{ value["NumCode"] }}</th>
-                            <td>{{ value["CharCode"] }}</td>
-                            <td>{{ value["Nominal"] }}</td>
-                            <td>{{ value["Name"] }}</td>
-                            <td>{{ value["Value"] }}</td>
+                            <th scope="col">NumCode</th>
+                            <th scope="col">CharCode</th>
+                            <th scope="col">Nominal</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Value</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+                        {% for value in currency.values() %}
+                            <tr>
+                                <th scope="row">{{ value["NumCode"] }}</th>
+                                <td>{{ value["CharCode"] }}</td>
+                                <td>{{ value["Nominal"] }}</td>
+                                <td>{{ value["Name"] }}</td>
+                                <td>{{ value["Value"] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
 
-        </div>
+                </table>
+
+            </div>
 
         </div>
     </div>

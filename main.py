@@ -5,7 +5,7 @@ from requests.models import Response
 from datetime import datetime
 import json
 
-from additional_functions import check_correctly_date, get_final_data
+from additional_functions import check_correctly_date, get_final_data, get_left_and_right_border
 
 
 # date_from_input = input('Введи дату в формате dd.mm.yyyy: ')
@@ -44,6 +44,7 @@ def index():
         'month': 'Введи месяц',
         'year': 'Введи год',
     }
+
     return render_template('index.html', **data)
 
 
@@ -71,6 +72,20 @@ def success():
     date_key: str = object_dt.strftime('%d_%m_%Y')
 
     final_data = get_final_data(date_key, object_dt)
+
+    if final_data['data'] is None:
+        result_borders = get_left_and_right_border(current_date)
+        count_date = 0
+        if result_borders['left'] is not None:
+            count_date += 1
+        if result_borders['right'] is not None:
+            count_date += 1
+
+        data['left'] = result_borders['left']
+        data['right'] = result_borders['right']
+        data['count_date'] = count_date
+
+        return render_template('two_button.html', **data)
 
     for key, value in final_data['data'].items():
         if value['Nominal'] != 1:
@@ -102,9 +117,6 @@ def test_currency():
     data['currency'] = currency['Valute']
 
     return render_template('test_currency.html', **data)
-
-
-
 
 
 if __name__ == '__main__':

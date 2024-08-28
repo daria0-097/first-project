@@ -1,6 +1,6 @@
 import requests
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 
@@ -109,5 +109,42 @@ def request_to_currency_api(object_dt: datetime, date_key: str) -> bool | dict:
 
     return False
 
+
+def get_left_and_right_border(data: str) -> dict:
+    date_time_obj = datetime.strptime(data, '%d.%m.%Y')
+    copy_dt = date_time_obj
+    result_borders = {
+        "left": None,
+        "right": None,
+    }
+
+    for i in ['left', 'right']:
+        date_time_obj = copy_dt
+        count, flag = 0, True
+        while flag:
+            if i == 'right':
+                date_time_obj += timedelta(days=1)
+                if date_time_obj > datetime.now():
+                    break
+
+            elif i == 'left':
+                date_time_obj -= timedelta(days=1)
+
+            result_response = request_to_currency_api(date_time_obj, date_time_obj.strftime('%d_%m_%Y'))
+            if isinstance(result_response, bool):
+                count += 1
+
+                if count >= 5:
+                    break
+                continue
+
+            result_borders[i] = date_time_obj.strftime('%d.%m.%Y')
+            flag = False
+
+    print(result_borders)
+    return result_borders
+
+
+# print(get_left_and_right_border('3.1.2024'))
 
 
