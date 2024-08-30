@@ -50,10 +50,14 @@ def index():
 
 @app.route('/submit', methods=["POST"])
 def submit():
+    date = request.form.get('date')
+    # print(f'переменная date: {date}')
+    if date is not None:
+        return redirect(url_for('success', current_date=date))
+
     day = request.form.get('day')
     month = request.form.get('month')
     year = request.form.get('year')
-
     if not check_correctly_date(f'{day}.{month}.{year}'):
         return redirect(url_for('error'))
 
