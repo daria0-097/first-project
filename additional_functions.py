@@ -141,10 +141,8 @@ def get_left_and_right_border(data: str) -> dict:
             result_borders[i] = date_time_obj.strftime('%d.%m.%Y')
             flag = False
 
-    print(result_borders)
+    # print(result_borders)
     return result_borders
 
 
 # print(get_left_and_right_border('3.1.2024'))
-
-

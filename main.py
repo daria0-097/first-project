@@ -1,40 +1,15 @@
-import requests
+from flask import Flask, render_template, request, redirect, url_for
 
-from requests.models import Response
-
+from time import perf_counter
 from datetime import datetime
 import json
 
 from additional_functions import check_correctly_date, get_final_data, get_left_and_right_border
 
 
-# date_from_input = input('Введи дату в формате dd.mm.yyyy: ')
-# flag = False
-#
-# if check_correctly_date(date_from_input):
-#     object_dt = datetime.strptime(date_from_input, '%d.%m.%Y')
-#     date_key: str = object_dt.strftime('%d_%m_%Y')
-#
-#     result = get_final_data(date_key, object_dt)
-#
-#     if result['flag'] is True:
-#         print(result['info'], 'Они будут ниже:')
-#         print(result['data'])
-#     else:
-#         print(result['info'])
-#
-# else:
-#     print('error')
-
-# FastAPI
-# Django
-# Flask
-
-from flask import Flask, render_template, request, redirect, url_for
-
-
 app = Flask(__name__)
 
+start = None
 
 @app.route('/')
 def index():
@@ -50,6 +25,8 @@ def index():
 
 @app.route('/submit', methods=["POST"])
 def submit():
+    global start
+    start = perf_counter()
     date = request.form.get('date')
     # print(f'переменная date: {date}')
     if date is not None:
@@ -58,6 +35,7 @@ def submit():
     day = request.form.get('day')
     month = request.form.get('month')
     year = request.form.get('year')
+
     if not check_correctly_date(f'{day}.{month}.{year}'):
         return redirect(url_for('error'))
 
@@ -89,6 +67,7 @@ def success():
         data['right'] = result_borders['right']
         data['count_date'] = count_date
 
+        print(perf_counter() - start)
         return render_template('two_button.html', **data)
 
     for key, value in final_data['data'].items():
@@ -105,9 +84,9 @@ def success():
 @app.route('/error')
 def error():
     data = {
-        'title': "Курс валют",
+        'title': "Ошибка",
     }
-    return render_template('error.html')
+    return render_template('error.html', **data)
 
 
 @app.route('/test_currency')
@@ -125,7 +104,3 @@ def test_currency():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
