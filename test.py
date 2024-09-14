@@ -58,49 +58,49 @@ from time import perf_counter
 #
 # print(a)
 
-from datetime import datetime, timedelta
-import aiohttp
-import json
-
-
-async def fetch(session, url, string_date):
-    async with session.get(url, ssl=True) as response:
-        text = await response.text()
-        if response.status == 200:
-            print(f'Запрос бы успешно завершен. Status code: {response.status}, data: {string_date}')
-            return {
-                'flag': response.status,
-                'data': json.loads(text)
-            }
-        else:
-            print('Произошла ошибка')
-            return {'flag': response.status}
-
-
-async def bound(session, url, string_date, sem: asyncio.Semaphore):
-    async with sem:
-        return await fetch(session, url, string_date)
-
-
-async def main():
-    tasks = []
-    sem = asyncio.Semaphore(100)
-    async with aiohttp.ClientSession() as session:
-        start_date = datetime.strptime('01.01.2024', '%d.%m.%Y')
-        for i in range(50):
-            url = f'https://www.cbr-xml-daily.ru/archive/{start_date.strftime("%Y/%m/%d")}/daily_json.js'
-            task = asyncio.create_task(bound(session, url, start_date.strftime('%d.%m.%Y'), sem))
-            tasks.append(task)
-            start_date += timedelta(days=1)
-
-        result = await asyncio.gather(*tasks)
-
-    return result
-
-
-start = time.perf_counter()
-result = asyncio.run(main())
-print(perf_counter() - start)
+# from datetime import datetime, timedelta
+# import aiohttp
+# import json
+#
+#
+# async def fetch(session, url, string_date):
+#     async with session.get(url, ssl=True) as response:
+#         text = await response.text()
+#         if response.status == 200:
+#             print(f'Запрос бы успешно завершен. Status code: {response.status}, data: {string_date}')
+#             return {
+#                 'flag': response.status,
+#                 'data': json.loads(text)
+#             }
+#         else:
+#             print('Произошла ошибка')
+#             return {'flag': response.status}
+#
+#
+# async def bound(session, url, string_date, sem: asyncio.Semaphore):
+#     async with sem:
+#         return await fetch(session, url, string_date)
+#
+#
+# async def main():
+#     tasks = []
+#     sem = asyncio.Semaphore(100)
+#     async with aiohttp.ClientSession() as session:
+#         start_date = datetime.strptime('01.01.2024', '%d.%m.%Y')
+#         for i in range(50):
+#             url = f'https://www.cbr-xml-daily.ru/archive/{start_date.strftime("%Y/%m/%d")}/daily_json.js'
+#             task = asyncio.create_task(bound(session, url, start_date.strftime('%d.%m.%Y'), sem))
+#             tasks.append(task)
+#             start_date += timedelta(days=1)
+#
+#         result = await asyncio.gather(*tasks)
+#
+#     return result
+#
+#
+# start = time.perf_counter()
+# result = asyncio.run(main())
+# print(perf_counter() - start)
 
 
 #
