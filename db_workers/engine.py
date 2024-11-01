@@ -4,7 +4,9 @@ import os
 
 
 def connect_to_sqlite(sql_request: str, commit_flag: bool = False) -> None | tuple:
-    db_url = f"sqlite:///{os.getcwd() + ('/' if os.name == 'posix' else r'\\') + 'data_base.db'}"
+    # print(os.getcwd())
+    db_url = f"sqlite:///{os.getcwd()}" + '\\' + 'data_base.db'
+    # db_url = f"sqlite:///{os.getcwd() + ('/' if os.name == 'posix' else '\\') + 'data_base.db'}"
     engine = create_engine(db_url)
 
     with engine.connect() as connection:
@@ -17,7 +19,7 @@ def connect_to_sqlite(sql_request: str, commit_flag: bool = False) -> None | tup
             response = connection.execute(text(sql_request))
             return response.keys(), response.fetchall()
 
-
+# connect_to_sqlite('')
 def get_data_from_data_base(sql_request: str) -> str:
     """Принимаем на вход запрос на SELECT - возвращаем таблицу с 'нормальным' внешним видом"""
     keys, rows = [list(el) for el in connect_to_sqlite(sql_request)]
