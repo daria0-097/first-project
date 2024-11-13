@@ -5,6 +5,9 @@ import os
 
 def connect_to_sqlite(sql_request: str, commit_flag: bool = False) -> None | tuple:
     db_url = f"sqlite:///{os.getcwd() + ('/' if os.name == 'posix' else r'\\') + 'data_base.db'}"
+
+    # db_url = f"sqlite:///{os.getcwd()}" + '\\' + 'data_base.db'
+
     engine = create_engine(db_url)
 
     with engine.connect() as connection:
@@ -21,6 +24,12 @@ def connect_to_sqlite(sql_request: str, commit_flag: bool = False) -> None | tup
 def get_data_from_data_base(sql_request: str) -> str:
     """Принимаем на вход запрос на SELECT - возвращаем таблицу с 'нормальным' внешним видом"""
     keys, rows = [list(el) for el in connect_to_sqlite(sql_request)]
+
+    # print('Вывод из функции get_data_from_data_base:')
+    # print(keys)
+    # print(rows)
+    # print()
+
     rows_dict: dict = {}
     for col_index in range(len(keys)):
         max_string = len(keys[col_index])
@@ -79,3 +88,24 @@ def get_data_from_data_base(sql_request: str) -> str:
 #        ('The Incredibles', 'Brad Bird', 2004, 116);
 # """, True)
 
+# connect_to_sqlite("""
+# INSERT INTO Films_2 (title, director, release_year, running_time)
+# VALUES ('Interstellar', NULL, 2014, 169),
+#        ('The Shawshank Redemption', 'Frank Darabont', NULL, 142),
+#        ('Shutter Island', 'Martin Scorseze', NULL, 138);
+# """, True)
+
+
+# connect_to_sqlite("""
+# INSERT INTO Songs (place, trackname, artist, streams, release_year, length)
+# VALUES (4, 'Crazy on You', 'Heart', 303885, 1976, 254),
+#        (7, 'My Lover', 'The Sounds', 211133, 2009, 266),
+#        (3, 'Running up That Hill', 'Kate Bush', 339583, NULL, 296),
+#        (5, 'Thrill', 'The Sounds', 294264, 2016, 228),
+#        (9, 'Spent the Day in Bed', 'Morrissey', 174994, 2017, 259),
+#        (2, 'Bigmouth Strikes Again', 'The Smiths', 379112, 1986, 195),
+#        (6, 'Painted By Numbers', 'The Sounds', 265121, 2006, 200),
+#        (8, 'Let Me Kiss You', 'Morrissey', 197426, 2004, 210),
+#        (1, 'Keep Yourself Alive', 'Queen', 385991, NULL, 235),
+#        (10, 'Everyday is Like Sunday', 'Morrissey', 160404, 1988, 216);
+# """, True)

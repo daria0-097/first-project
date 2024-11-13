@@ -1,0 +1,202 @@
+SELECT - извлечь из БД какие-то данные
+ORDER BY - сортировка данных
+DESC - по возрастанию
+ASC - по убыванию
+
+WHERE - для фильтрации данных | =, !=, >, <, >=, <=, IS NULL, IS NOT NULL, BETWEEN __ AND __, IN
+LIKE - поиск по НЕпрямым совпадениям + метасимвол % (любое количество любых символов) и метасимвол _ (любой один символ)
+
+Создание вычисляемых полей
+CONCAT() - конкатенация (сложение) строк - может принимать любое количество "аргументов"
+CONCAT_WS() - конкатенация строк (аналог join в python), первый аргумент - разделитель. Остальные - элементы строки
+
+CHAR_LENGTH() - получение длины строки (не работает в sqlite)
+LOWER()
+UPPER()
+
+LTRIM() - удаляет символы слева (пробельные)
+RTRIM() - ... справа
+TRIM() - ... и справа и слева
+
+REVERSE() - перевернуть строку - аналог среза типа [::-1]
+REPEAT(строка, кол-во) - повторяет строку n раз
+
+LPAD(строка, длина_строки, символ_заполнитель) - увеличить строку до длины N заполнив её символом заполнителем слева
+RPAD(строка, длина_строки, символ_заполнитель) - увеличить строку до длины N заполнив её символом заполнителем справа
+
+LEFT(строка, кол-во_символов) - извлекают определенное количество символов слева
+RIGHT(строка, кол-во_символов) - извлекают определенное количество символов справа
+LOACTE(что мы будем искать, где мы будем искать) - для определения местоположения подстроки в строке
+REPLACE() - заменить что-то в строке на что-то новое (строка, что меняем, на что меняем)
+
+SUBSTRING(строка, позиция_старта, длина_извлекаемой(необ)) - извлечь подстроку из строки
+SUBSTRING_INDEX(строка, разделитель, "количество элементов") - извлечь подстроку из строки с помощью разделителя
+
+ЧИСЛОВЫЕ ФУНКЦИИ
+
+DIV оператор        целочисленное деление
+MOD оператор        остаток от деления
+
+ABS()       модуль числа
+ROUND()     округление (математическое)
+POW()       возведение в степень
+SQRT()      вычисление квадратного корня
+RAND()      получить случайное дробное число (число с плавающей точкой) в диапазоне [0, 1)
+
+FLOOR()     окружение до ближайшего целого в меньшую сторону
+CEILING()   окружение до ближайшего целого в большую сторону
+
+
+ФУНЦИИ ДЛЯ РАБОТЫ С ДАТОЙ И ВРЕМЕНЕМ
+
+INTERVAL величина_интервала еденица_измерения (DAY / YEAR / YEAR_MONTH)
+
+NOW() - текущее дата и время
+CURDATE() - текущая дата
+CURTIME - текущее время
+
+UTC_TIMESTAMP() - текущая дата и время в нулевом часовом поясе
+UTC_DATE()
+UTC_TIME()
+
+MAKEDATE(year, day-номер дня в году) - получить на выходе объект типа date
+MAKETIME(часы, минуты, секунды)
+
+TIME_TO_SEC() - для преобразования в часов, минут, секунд в секунды
+SEC_TO_TIME() - для преобразования секунд в часы, минуты, секунды
+
+
+DISTINCT - выбрать уникальные поля из таблицы
+
+
+АГРЕГАТНЫЕ ФУНКЦИИ
+
+AVG() - вычисление среднего арифметического
+COUNT() - для подсчёта количества записей в таблице или количество значений в поле
+MAX()
+MIN()
+SUM()
+
+ALL()
+ANY()
+
+SELECT title, author, price
+FROM Books
+WHERE price < ANY (SELECT price
+                   FROM Books
+                   WHERE author = 'Chuck Palahniuk');
+
+SELECT title, author, price
+FROM Books
+WHERE price > 9.99 AND price > 13.99;
+
+
+СОЗДАНИЕ ТАБЛИЦ
+
+CREATE TABLE Books
+(
+    id      INT UNIQUE,
+    title   VARCHAR(30),
+    author  VARCHAR(30)
+    price   INT
+);
+
+
+INSERT INTO Books (title, author)
+VALUES ('Title 1','Author 2');
+
+
+-----------------------
+Первичный ключ
+
+CREATE TABLE Books
+(
+    id      INT PRIMARY KEY,
+    title   VARCHAR(30),
+    author  VARCHAR(30)
+);
+
+Составной первичный ключ
+
+CREATE TABLE Books
+(
+    title   VARCHAR(30),
+    author  VARCHAR(30),
+    PRIMARY KEY (title, author)
+);
+
+
+CREATE TABLE Books
+(
+    id      INT PRIMARY KEY AUTO_INCREMENT,
+    title   VARCHAR(30),
+    author  VARCHAR(30)
+);
+
+
+
+CREATE TABLE Authors
+(
+    id              INT PRIMARY KEY AUTO_INCREMENT,
+    name            VARCHAR(30),
+    surname         VARCHAR(30)
+);
+
+CREATE TABLE Books
+(
+    id              INT PRIMARY KEY AUTO_INCREMENT,
+    title           VARCHAR(30),
+    author_id       INT,
+    FOREIGN KEY (author_id) REFERENCES Authors (id)
+        ON UPDATE   CASCADE
+        ON DELETE   CASCADE
+);
+
+
+INSERT INTO Authors (name, surname)
+VALUES ('первый', 'второй'),
+       ('третий', 'четвертый');
+
+INSERT INTO Books (title, author_id)
+VALUES ('первый', 2);
+
+
+
+Корелированные и некорелированные подзарпосы
+
+SELECT title, user_score
+FROM Books_2 as B
+WHERE user_score > (SELECT user_score
+                    FROM Books_2 as A
+                    WHERE A.id = (B.id - 1));
+
+SELECT title, critic_score, user_score
+FROM Books_2
+WHERE (critic_score, user_score) = (SELECT MIN(critic_score), MIN(user_score) FROM Books_2);
+
+
+
+Внутреннее соединение
+
+<первая таблица> INNER JOIN <вторая таблица> ON <условие соединения>
+
+SELECT *
+FROM Books_4 INNER JOIN Authors ON author_id = Authors.id;
+
+
+
+Внешнее соединение
+
+<первая таблица> OUTER JOIN <вторая таблица> ON <условие соединения>
+
+SELECT *
+FROM Books_4 RIGHT OUTER JOIN Authors ON author_id = Authors.id;
+
+
+
+
+
+
+
+
+
