@@ -7,3 +7,4 @@ __pycache__/
 
 /data_base/*.json
 info_about_successful_requests.json
+proxy_dict.py
