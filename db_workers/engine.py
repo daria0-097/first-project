@@ -109,3 +109,6 @@ def get_data_from_data_base(sql_request: str) -> str:
 #        (1, 'Keep Yourself Alive', 'Queen', 385991, NULL, 235),
 #        (10, 'Everyday is Like Sunday', 'Morrissey', 160404, 1988, 216);
 # """, True)
+
+
+print(1, '\\', 2)

@@ -1,4 +1,3 @@
-from lxml.html.builder import SELECT
 
 from engine import get_data_from_data_base, connect_to_sqlite
 

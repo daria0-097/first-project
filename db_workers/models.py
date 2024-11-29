@@ -1,7 +1,11 @@
+import json
+
 from sqlalchemy import Column, String, Integer, create_engine, Date, Float, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Session, relationship
 
 import os
+
+from datetime import date
 
 db_url = f"sqlite:///{os.getcwd() + ('/' if os.name == 'posix' else r'\\') + 'data_base.db'}"
 engine = create_engine(db_url)
@@ -21,12 +25,15 @@ class CurrencyInfo(Base):
     # пока что мы думаем как поступить с номиналом
 
 
+a = CurrencyInfo(name=..., num_code=..., char_code=...)
+
+
 class DateStatus(Base):
     __tablename__ = 'date_status'
 
     id = Column(Integer, primary_key=True)
     date = Column(Date, nullable=False)
-    status = Column(Integer, nullable=False)
+    status = Column(Integer, nullable=False)        # 1 - успех / 0 - не успех
 
 
 class PriceInfo(Base):
@@ -47,11 +54,83 @@ class PriceInfo(Base):
     CNY = Column(Float, nullable=True, default=None)
 
 
+# Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 session = Session(engine)
 
 
+# with open('../result_file_without_spaces.json', 'r', encoding='utf-8') as file:
+#     all_data = json.load(file)
+#
+# first_dict = all_data[0]
+# for key, value in first_dict['result']['Valute'].items():
+#     if key in ['BYN', 'HKD', 'AED', 'USD', 'EUR', 'IDR', 'KZT', 'THB', 'UZS', 'JPY', 'CNY']:
+#         session.add(
+#             CurrencyInfo(
+#                 name=value['Name'],
+#                 num_code=value['NumCode'],
+#                 char_code=value['CharCode'],
+#             )
+#         )
+# session.commit()
+#
+# for element in all_data[::-1]:
+#     lst = element['url'].split('/')
+#     year, month, day = lst[4], lst[5], lst[6]
+#
+#     curr_date = date(int(year), int(month), int(day))
+#     if element['status_code'] != 200:
+#         status_code = 0
+#     else:
+#         status_code = 1
+#
+#     obj = DateStatus(
+#         date=curr_date,
+#         status=status_code
+#     )
+#     session.add(obj)
+#     session.commit()
+#
+#     if status_code:
+#         BYN = element['result']['Valute']['BYN']['Value'] / element['result']['Valute']['BYN']['Nominal'] if 'BYN' in element['result']['Valute'] else None
+#         HKD = element['result']['Valute']['HKD']['Value'] / element['result']['Valute']['HKD']['Nominal'] if 'HKD' in element['result']['Valute'] else None
+#         AED = element['result']['Valute']['AED']['Value'] / element['result']['Valute']['AED']['Nominal'] if 'AED' in element['result']['Valute'] else None
+#         USD = element['result']['Valute']['USD']['Value'] / element['result']['Valute']['USD']['Nominal'] if 'USD' in element['result']['Valute'] else None
+#         EUR = element['result']['Valute']['EUR']['Value'] / element['result']['Valute']['EUR']['Nominal'] if 'EUR' in element['result']['Valute'] else None
+#         IDR = element['result']['Valute']['IDR']['Value'] / element['result']['Valute']['IDR']['Nominal'] if 'IDR' in element['result']['Valute'] else None
+#         KZT = element['result']['Valute']['KZT']['Value'] / element['result']['Valute']['KZT']['Nominal'] if 'KZT' in element['result']['Valute'] else None
+#         THB = element['result']['Valute']['THB']['Value'] / element['result']['Valute']['THB']['Nominal'] if 'THB' in element['result']['Valute'] else None
+#         UZS = element['result']['Valute']['UZS']['Value'] / element['result']['Valute']['UZS']['Nominal'] if 'UZS' in element['result']['Valute'] else None
+#         JPY = element['result']['Valute']['JPY']['Value'] / element['result']['Valute']['JPY']['Nominal'] if 'JPY' in element['result']['Valute'] else None
+#         CNY = element['result']['Valute']['CNY']['Value'] / element['result']['Valute']['CNY']['Nominal'] if 'CNY' in element['result']['Valute'] else None
+#
+#         obj_2 = PriceInfo(
+#             date_id=obj.id,
+#             BYN=BYN,
+#             HKD=HKD,
+#             AED=AED,
+#             USD=USD,
+#             EUR=EUR,
+#             IDR=IDR,
+#             KZT=KZT,
+#             THB=THB,
+#             UZS=UZS,
+#             JPY=JPY,
+#             CNY=CNY,
+#         )
+#         session.add(obj_2)
+#
+#     session.commit()
 
+
+# print(bool(0))
+# print(bool(1))
+# print(bool(-1))
+# print(bool(1_000))
+#
+#
+# while 1:
+#     print(...)
 
 #
 #
@@ -81,4 +160,28 @@ session = Session(engine)
 #     print(i.id, i.title, i.author)
 
 # SELECT * FROM Books_2 WHERE author = ''
+
+
+
+
+
+
+
+print(os.getcwd())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
