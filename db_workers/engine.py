@@ -110,5 +110,3 @@ def get_data_from_data_base(sql_request: str) -> str:
 #        (10, 'Everyday is Like Sunday', 'Morrissey', 160404, 1988, 216);
 # """, True)
 
-
-print(1, '\\', 2)

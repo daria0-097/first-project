@@ -1,24 +1,43 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 
 from time import perf_counter
 from datetime import datetime
 import json
 
-from additional_functions import check_correctly_date, get_final_data, get_left_and_right_border
-
+from additional_functions import check_correctly_date, get_final_data, get_left_and_right_border, fill_data_base
+from db_workers.models import CurrencyInfo, DateStatus, PriceInfo, save_data_from_downtime, Session_obj
 
 app = Flask(__name__)
 
 start = None
 
+
 @app.route('/')
 def index():
+    fill_data_base()
     data = {
         'title': "Мой новый заголовок",
         'day': 'Введи день',
         'month': 'Введи месяц',
         'year': 'Введи год',
     }
+
+    with Session_obj() as session:
+        all_days: list = session.query(DateStatus).all()
+        fiter_days = list(filter(lambda x: x.status == 1, all_days))
+        last_days = fiter_days[-360:]
+        values_USD = []
+        values_EUR = []
+        for el in last_days:
+            value = session.query(PriceInfo).where(el.id == PriceInfo.date_id).first()
+            values_USD.append(value.USD)
+            values_EUR.append(value.EUR)
+
+        last_days = [el.date.strftime('%d %m') for el in last_days]
+
+    data['dates'] = last_days
+    data['valuesUSD'] = values_USD
+    data['valuesEUR'] = values_EUR
 
     return render_template('index.html', **data)
 
@@ -51,30 +70,28 @@ def success():
     current_date: str = request.args.get('current_date')
 
     object_dt = datetime.strptime(current_date, '%d.%m.%Y')
-    date_key: str = object_dt.strftime('%d_%m_%Y')
 
-    final_data = get_final_data(date_key, object_dt)
+    final_data = get_final_data(object_dt)
 
-    if final_data['data'] is None:
-        result_borders = get_left_and_right_border(current_date)
+    if final_data['two_dates'] is True:
         count_date = 0
-        if result_borders['left'] is not None:
+        if final_data['data']['left']['information'] is not None:
             count_date += 1
-        if result_borders['right'] is not None:
+        if final_data['data']['right']['information'] is not None:
             count_date += 1
 
-        data['left'] = result_borders['left']
-        data['right'] = result_borders['right']
         data['count_date'] = count_date
 
-        print(perf_counter() - start)
+        data['left'] = final_data['data']['left']['data']
+        data['right'] = final_data['data']['right']['data']
+
         return render_template('two_button.html', **data)
 
-    for key, value in final_data['data'].items():
-        if value['Nominal'] != 1:
-            new_value = value['Value'] / value['Nominal']
-            value['Nominal'] = 1
-            value['Value'] = round(new_value, 4)
+    # for key, value in final_data['data'].items():
+    #     if value['Nominal'] != 1:
+    #         new_value = value['Value'] / value['Nominal']
+    #         value['Nominal'] = 1
+    #         value['Value'] = round(new_value, 4)
 
     data['currency'] = final_data['data']
 

@@ -1,29 +1,24 @@
-from random import choice
+from sqlalchemy import desc
+
+from datetime import datetime, timedelta, date
 import asyncio
 import aiohttp
 import json
-from datetime import datetime, timedelta
-from time import perf_counter
 
-from db_workers.models import CurrencyInfo, DateStatus, PriceInfo
-from proxy_dict import all_proxy
-
-import requests
+from db_workers.models import Session_obj, DateStatus
 
 
-dct = {
-    'url': None,
-    'status_code': None,
-    'result': None,
-    'count_error': 0
-}
+def data_for_downtime() -> list:
+    with Session_obj() as current_session:
+        last_day_from_db: date = current_session.query(DateStatus).order_by(desc(DateStatus.id)).first().date
 
-
-def main():
-    interval = 3500
     start_day = datetime.today()
     days_task = []
-    for i in range(interval):
+
+    while True:
+        if start_day.day == last_day_from_db.day and start_day.month == last_day_from_db.month:
+            break
+
         url = f'https://www.cbr-xml-daily.ru/archive/{start_day.strftime("%Y/%m/%d")}/daily_json.js'
         days_task.append(
             {
@@ -40,16 +35,14 @@ def main():
         if count_error >= 3:
             return None
 
-        current_proxy = choice(all_proxy)
-        # print(current_proxy)
         try:
-            async with session.get(days_task[index]['url'], ssl=True, proxy=current_proxy['http'], timeout=5) as response:
+            async with session.get(days_task[index]['url'], ssl=True, proxy=None, timeout=5) as response:
                 status_code = response.status
                 days_task[index]['status_code'] = status_code
                 days_task[index]['result'] = json.loads(await response.text())
                 # days_task[index]['result'] = (await response.text())[:30]
 
-                print(status_code, end=' ')
+                # print(status_code, end=' ')
 
                 if status_code == 200:
                     return None
@@ -57,7 +50,7 @@ def main():
                     days_task[index]['count_error'] += 1
                     return await fetch(session, index)
         except:
-            print('ERROR')
+            # print('ERROR')
             days_task[index]['count_error'] += 1
             return await fetch(session, index)
 
@@ -68,7 +61,7 @@ def main():
     async def run_loop():
         tasks = []
 
-        sem = asyncio.Semaphore(150)
+        sem = asyncio.Semaphore(3)
 
         async with aiohttp.ClientSession() as session:
             for index in range(len(days_task)):
@@ -80,16 +73,3 @@ def main():
     asyncio.run(run_loop())
 
     return days_task
-
-
-start = perf_counter()
-
-result = main()
-print(f'Время выполнения = {perf_counter() - start}')
-
-with open('result_file_without_spaces.json', 'w', encoding='utf-8') as file:
-    json.dump(result, file)
-
-# start = time.perf_counter()
-# result = asyncio.run(main())
-# print(perf_counter() - start)

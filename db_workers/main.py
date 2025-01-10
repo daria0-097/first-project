@@ -130,13 +130,13 @@ WHERE price >  ALL (SELECT price
 #     False,   True,    False
 lst = [10 > 20, 15 < 18, True is False]
 
-print(any(lst))
-print(lst[0] or lst[1] or lst[2])
-
-print()
-
-print(all(lst))
-print(lst[0] and lst[1] and lst[2])
+# print(any(lst))
+# print(lst[0] or lst[1] or lst[2])
+#
+# print()
+#
+# print(all(lst))
+# print(lst[0] and lst[1] and lst[2])
 
 
 a, b = [1, 2]

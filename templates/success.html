@@ -14,18 +14,16 @@
                         <tr>
                             <th scope="col">NumCode</th>
                             <th scope="col">CharCode</th>
-                            <th scope="col">Nominal</th>
                             <th scope="col">Name</th>
                             <th scope="col">Value</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for value in currency.values() %}
+                        {% for key, value in currency.items() %}
                             <tr>
                                 <th scope="row">{{ value["NumCode"] }}</th>
-                                <td>{{ value["CharCode"] }}</td>
-                                <td>{{ value["Nominal"] }}</td>
+                                <td>{{ key }}</td>
                                 <td>{{ value["Name"] }}</td>
                                 <td>{{ value["Value"] }}</td>
                             </tr>

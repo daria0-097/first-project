@@ -119,3 +119,39 @@ from time import perf_counter
 # req = requests.get(url)
 # print(req.status_code)
 # print(req.text)
+
+
+
+
+
+def get_even(num: int) -> bool:
+    if num % 2 == 1:
+        return True
+    return False
+
+
+# get_even2 = lambda num: num % 2 == 1
+
+
+a = [1, 2, 3, 4, 5]
+
+final_list = list(filter(lambda num: num % 2 == 1, a))
+print(final_list)
+
+# print(get_even2(2))
+#
+# for i in a:
+#     if get_even(i):
+#         print(i)
+
+
+
+
+
+
+
+
+
+
+
+

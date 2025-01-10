@@ -53,4 +53,19 @@
             </form>
 
         </div>
+
+        <div class="container text-center" style="padding-top: 50px;">
+            <canvas id="myChart"></canvas>
+        </div>
+
+
+<script>
+    const dates = {{ dates|tojson }};
+    const valuesUSD = {{ valuesUSD|tojson }};
+    const valuesEUR = {{ valuesEUR|tojson }};
+</script>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
 {% endblock %}
